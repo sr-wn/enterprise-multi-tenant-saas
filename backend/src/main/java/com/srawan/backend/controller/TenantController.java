@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.srawan.backend.service.TenantService;
+import com.srawan.backend.dto.RegisterTenantRequest;
 import com.srawan.backend.dto.TenantRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,17 @@ public class TenantController {
     public TenantController(TenantService tenantService){
         this.tenantService=tenantService;
     }
+
+
+    @PostMapping("/register")
+@ResponseStatus(HttpStatus.CREATED)
+public TenantResponse registerTenant(
+        @RequestBody RegisterTenantRequest request) {
+
+    return tenantService.registerTenant(request);
+
+}
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
