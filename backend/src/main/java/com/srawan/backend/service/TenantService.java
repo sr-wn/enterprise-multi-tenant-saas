@@ -50,8 +50,7 @@ public class TenantService {
         }
         Tenant tenant=new Tenant(request.companyName(), request.companyEmail());
         Tenant savedTenant=tenantRepository.save(tenant);
-        User admin=new User(request.adminName(), request.adminEmail(), passwordEncoder.encode(request.adminPassword()));
-        admin.setRole(Role.ADMIN);
+        User admin=new User(request.adminName(), request.adminEmail(), passwordEncoder.encode(request.adminPassword()), Role.ADMIN);
         admin.setTenant(savedTenant);
         User savedAdmin=userRepository.save(admin);
         return TenantMapper.toResponse(savedTenant);

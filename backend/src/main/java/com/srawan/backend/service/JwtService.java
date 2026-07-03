@@ -2,6 +2,8 @@ package com.srawan.backend.service;
 
 import org.springframework.stereotype.Service;
 
+import com.srawan.backend.entity.User;
+
 import java.util.Date;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -21,13 +23,24 @@ public class JwtService {
   @Value("${jwt.expiration}")
     private long expirationTime;
 
-    public String generateToken(String email){
+    public String generateToken(User user){
         Key key= Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-        return Jwts.builder().setSubject(email)
+        return Jwts.builder().setSubject(user.getEmail())
+        .claim("role", user.getRole().name())
+        .claim("tenantId", user.getTenant().id())
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis()+expirationTime))
             .signWith( key, SignatureAlgorithm.HS256)
             .compact();
+        }
+
+
+        public String extractRole(String token){
+            return extractAllClaims(token).get("role", String.class);
+        }
+
+        public Long extractTenantId(String token){
+            return extractAllClaims(token).get("tenantId", Long.class);
         }
 
         public String extractEmail(String token){

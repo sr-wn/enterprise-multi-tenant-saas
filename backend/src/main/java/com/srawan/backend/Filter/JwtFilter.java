@@ -65,6 +65,7 @@ protected void doFilterInternal(HttpServletRequest request,
 
         UserDetails userDetails =
                 customUserDetailsService.loadUserByUsername(email);
+                System.out.println("Authorities: " + userDetails.getAuthorities());
 
         System.out.println("User Loaded: " + userDetails.getUsername());
 

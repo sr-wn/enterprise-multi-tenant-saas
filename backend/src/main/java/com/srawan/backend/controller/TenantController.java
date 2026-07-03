@@ -13,6 +13,7 @@ import com.srawan.backend.dto.TenantRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.srawan.backend.dto.TenantResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -45,6 +46,8 @@ public TenantResponse registerTenant(
     public TenantResponse createTenant(@RequestBody TenantRequest request){
         return tenantService.createTenant(request);
     }
+
+ @PreAuthorize("hasRole('ADMIN')")   
 @GetMapping
 public List<TenantResponse> getAllTenants(){
     return tenantService.getAllTenants();
