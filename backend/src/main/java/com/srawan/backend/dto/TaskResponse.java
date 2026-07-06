@@ -1,20 +1,23 @@
 package com.srawan.backend.dto;
 
 import java.time.LocalDateTime;
+
+import com.srawan.backend.enums.TaskStatus;
+
 import java.time.LocalDate;
 
 public class TaskResponse {
     private Long id;
     private String title;
     private String description;
-    private String status;
+    private TaskStatus status;
     private String priority;
     private LocalDate dueDate;
     private LocalDateTime createdAt;
     private String assignedTo;
     private String createdBy;
 
-    public TaskResponse(Long id, String title, String description, String status, String priority, LocalDate dueDate, LocalDateTime createdAt, String assignedTo, String createdBy) {
+    public TaskResponse(Long id, String title, String description, TaskStatus status, String priority, LocalDate dueDate, LocalDateTime createdAt, String assignedTo, String createdBy) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -40,7 +43,7 @@ public class TaskResponse {
         return description;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 

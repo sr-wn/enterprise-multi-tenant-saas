@@ -3,7 +3,11 @@ package com.srawan.backend.controller;
 import com.srawan.backend.service.TaskService;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+import com.srawan.backend.dto.UpdateTaskStatusRequest;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.srawan.backend.dto.CreateTaskRequest;
 import com.srawan.backend.dto.TaskResponse;
@@ -38,6 +42,12 @@ public class TaskController {
 
         return taskService.myTasks();
 
+    }
+
+
+    @PatchMapping("/{id}/status")
+    public TaskResponse updateStatus(@PathVariable Long id, @RequestBody UpdateTaskStatusRequest request){
+        return taskService.updateStatus(id, request);
     }
     
 }

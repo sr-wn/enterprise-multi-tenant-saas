@@ -12,7 +12,8 @@ import com.srawan.backend.entity.Project;
 import com.srawan.backend.entity.User;
 import com.srawan.backend.dto.CreateTaskRequest;
 import com.srawan.backend.dto.TaskResponse;
-
+import com.srawan.backend.enums.TaskStatus;
+import com.srawan.backend.dto.UpdateTaskStatusRequest;
 
 
 @Service
@@ -51,7 +52,7 @@ Task task=new Task();
 
 task.setTitle(request.getTitle());
 task.setDescription(request.getDescription());
-task.setStatus("TODO");
+task.setStatus(TaskStatus.TODO);
 task.setPriority(request.getPriority());
 task.setDueDate(request.getDueDate());
 task.setProject(project);
@@ -102,5 +103,51 @@ public List<TaskResponse> myTasks(){
     User currentUser=getCurrentUser();
     return taskRepository.findByAssignedTo(currentUser).stream().map(this::mapToResponse).collect(Collectors.toList());
 
+}
+
+
+public TaskResponse updateStatus(Long taskId, UpdateTaskStatusRequest request){
+
+    User currentUser = getCurrentUser();
+
+
+    Task task = taskRepository
+            .findById(taskId)
+            .orElseThrow(
+                () -> new RuntimeException("Task Not Found")
+            );
+
+
+
+
+
+    if(
+        !task.getAssignedTo()
+                .getId()
+                .equals(
+                    currentUser.getId()
+                )
+    ){
+
+        throw new RuntimeException(
+            "You can update only your assigned tasks"
+        );
+
+    }
+
+
+
+    task.setStatus(
+            request.getStatus()
+    );
+
+
+
+    Task updatedTask =
+            taskRepository.save(task);
+
+
+
+    return mapToResponse(updatedTask);
 }
 }

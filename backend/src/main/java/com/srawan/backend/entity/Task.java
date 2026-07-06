@@ -7,7 +7,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
-
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import com.srawan.backend.enums.TaskStatus;
 import java.time.LocalDateTime;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
@@ -22,7 +24,8 @@ public class Task {
  private Long id;
  private String title;
  private String description;
- private String status;
+ @Enumerated(EnumType.STRING)
+ private TaskStatus status;
  private String priority;
  private LocalDate dueDate;
  private LocalDateTime createdAt;
@@ -71,11 +74,11 @@ public class Task {
      this.description=description;
  }
 
- public String getStatus(){
+ public TaskStatus getStatus(){
      return status;
  }
 
- public void setStatus(String status){
+ public void setStatus(TaskStatus status){
      this.status=status;
  }
 
