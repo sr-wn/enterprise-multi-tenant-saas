@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import com.srawan.backend.dto.CreateTaskRequest;
+import com.srawan.backend.dto.TaskActivityResponse;
 import com.srawan.backend.dto.TaskResponse;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -49,5 +50,14 @@ public class TaskController {
     public TaskResponse updateStatus(@PathVariable Long id, @RequestBody UpdateTaskStatusRequest request){
         return taskService.updateStatus(id, request);
     }
+
+    @GetMapping("/{id}/activity")
+public List<TaskActivityResponse> getActivity(
+        @PathVariable Long id
+){
+
+    return taskService.getActivity(id);
+
+}
     
 }
