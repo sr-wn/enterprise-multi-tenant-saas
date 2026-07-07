@@ -14,6 +14,7 @@ import com.srawan.backend.dto.CreateTaskRequest;
 import com.srawan.backend.dto.TaskActivityResponse;
 import com.srawan.backend.dto.TaskResponse;
 import com.srawan.backend.enums.TaskStatus;
+import com.srawan.backend.service.NotificationService;
 import com.srawan.backend.dto.UpdateTaskStatusRequest;
 import com.srawan.backend.entity.TaskActivity;
 import com.srawan.backend.repository.TaskActivityRepository;
@@ -27,12 +28,14 @@ public class TaskService {
     private ProjectRepository projectRepository;
     private UserRepository userRepository;
     private TaskActivityRepository taskActivityRepository;
+    private NotificationService notificationService;
 
-    public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository, UserRepository userRepository, TaskActivityRepository taskActivityRepository) {
+    public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository, UserRepository userRepository, TaskActivityRepository taskActivityRepository, NotificationService notificationService) {
         this.taskRepository = taskRepository;
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.taskActivityRepository = taskActivityRepository;
+        this.notificationService=notificationService;
     }
     
 public TaskResponse createTask(CreateTaskRequest request){
@@ -65,6 +68,7 @@ task.setProject(project);
 task.setAssignedTo(assignedUser);
 task.setCreatedBy(currentUser);
 Task saved=taskRepository.save(task);
+notificationService.createNotification(assignedUser,"You have been assigned a task "+saved.getTitle());
 
 return mapToResponse(saved);
 }
