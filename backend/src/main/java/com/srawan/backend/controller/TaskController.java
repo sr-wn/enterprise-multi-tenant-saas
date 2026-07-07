@@ -2,6 +2,8 @@ package com.srawan.backend.controller;
 
 import com.srawan.backend.service.TaskService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import com.srawan.backend.dto.UpdateTaskStatusRequest;
 
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.srawan.backend.dto.CreateTaskRequest;
 import com.srawan.backend.dto.TaskActivityResponse;
 import com.srawan.backend.dto.TaskResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +35,7 @@ public class TaskController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public TaskResponse createTask(@RequestBody CreateTaskRequest request){
+    public TaskResponse createTask(@Valid @RequestBody CreateTaskRequest request){
 
         return taskService.createTask(request);
 
@@ -39,11 +43,19 @@ public class TaskController {
 
 
     @GetMapping("/my")
-    public List<TaskResponse> myTasks(){
+   public Page<TaskResponse> myTasks(
 
-        return taskService.myTasks();
+        Pageable pageable
 
-    }
+){
+
+
+    return taskService.myTasks(
+            pageable
+    );
+
+
+}
 
 
     @PatchMapping("/{id}/status")

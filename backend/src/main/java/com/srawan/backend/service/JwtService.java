@@ -6,7 +6,6 @@ import com.srawan.backend.entity.User;
 
 import java.util.Date;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -12,7 +12,6 @@ import com.srawan.backend.enums.Role;
 
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.srawan.backend.repository.UserRepository;
@@ -96,7 +95,7 @@ return TenantMapper.toResponse(updatedTenant);
 
 
 public void deleteTenant(Long id){
-    Tenant tenant=tenantRepository.findById(id).orElseThrow(()->new ResourceAccessException("Tenant Not found"));
+    Tenant tenant=tenantRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Tenant Not found"));
     tenantRepository.delete(tenant);
 }
 

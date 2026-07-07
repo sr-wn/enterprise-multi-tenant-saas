@@ -10,12 +10,17 @@ import com.srawan.backend.repository.ProjectRepository;
 import com.srawan.backend.repository.TaskRepository;
 import com.srawan.backend.repository.UserRepository;
 
+import com.srawan.backend.exception.ResourceNotFoundException;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.stereotype.Service;
 
+
+
 @Service
 public class DashBoardService {
+
 
  private final ProjectRepository projectRepository;
 
@@ -24,6 +29,7 @@ public class DashBoardService {
 
 
     private final UserRepository userRepository;
+
 
 
 
@@ -38,13 +44,20 @@ public class DashBoardService {
 
     ){
 
+
         this.projectRepository = projectRepository;
 
         this.taskRepository = taskRepository;
 
         this.userRepository = userRepository;
 
+
     }
+
+
+
+
+
 
     public DashBoardResponse getDashboard(){
 
@@ -71,7 +84,6 @@ public class DashBoardService {
 
 
 
-
         long totalUsers =
                 userRepository
                         .countByTenantId(
@@ -80,14 +92,11 @@ public class DashBoardService {
 
 
 
-
-
         long totalTasks =
                 taskRepository
                         .countByProjectTenantId(
                                 tenantId
                         );
-
 
 
 
@@ -105,8 +114,6 @@ public class DashBoardService {
 
 
 
-
-
         long inProgressTasks =
                 taskRepository
                         .countByProjectTenantIdAndStatus(
@@ -120,9 +127,6 @@ public class DashBoardService {
 
 
 
-
-
-
         long completedTasks =
                 taskRepository
                         .countByProjectTenantIdAndStatus(
@@ -132,7 +136,6 @@ public class DashBoardService {
                                 TaskStatus.DONE
 
                         );
-
 
 
 
@@ -164,6 +167,8 @@ public class DashBoardService {
 
 
 
+
+
     private User getCurrentUser(){
 
 
@@ -177,10 +182,12 @@ public class DashBoardService {
 
 
         return userRepository
+
                 .findByEmail(email)
+
                 .orElseThrow(
 
-                    () -> new RuntimeException(
+                    () -> new ResourceNotFoundException(
                             "User not found"
                     )
 
@@ -190,5 +197,4 @@ public class DashBoardService {
     }
 
 
-    
 }

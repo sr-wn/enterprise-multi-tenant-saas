@@ -5,6 +5,9 @@ import java.util.Map;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+
+import java.util.HashMap;
 import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 
@@ -37,4 +40,117 @@ public class GlobalExceptionHandler {
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+
+
+        @ExceptionHandler(UnauthorizedActionException.class)
+public ResponseEntity<Map<String,Object>> handleUnauthorized(
+        UnauthorizedActionException ex
+){
+
+    Map<String,Object> response = Map.of(
+
+        "timestamp", LocalDateTime.now().toString(),
+
+        "status", 403,
+
+        "error", "Forbidden",
+
+        "message", ex.getMessage()
+
+    );
+
+
+    return ResponseEntity
+            .status(HttpStatus.FORBIDDEN)
+            .body(response);
+
+}
+
+
+
+
+
+
+
+@ExceptionHandler(Exception.class)
+public ResponseEntity<Map<String,Object>> handleGeneralException(
+        Exception ex
+){
+
+    Map<String,Object> response = Map.of(
+
+        "timestamp", LocalDateTime.now().toString(),
+
+        "status", 500,
+
+        "error", "Internal Server Error",
+
+        "message", ex.getMessage()
+
+    );
+
+
+    return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(response);
+
+}
+
+@ExceptionHandler(MethodArgumentNotValidException.class)
+public ResponseEntity<Map<String,Object>> handleValidationErrors(
+        MethodArgumentNotValidException ex
+){
+
+
+    Map<String,String> errors =
+            new HashMap<>();
+
+
+
+    ex.getBindingResult()
+            .getFieldErrors()
+            .forEach(
+
+                error -> errors.put(
+
+                    error.getField(),
+
+                    error.getDefaultMessage()
+
+                )
+
+            );
+
+
+
+
+    Map<String,Object> response =
+            Map.of(
+
+                "timestamp",
+                LocalDateTime.now().toString(),
+
+                "status",
+                400,
+
+                "error",
+                "Validation Failed",
+
+                "messages",
+                errors
+
+            );
+
+
+
+
+
+    return ResponseEntity
+
+            .status(HttpStatus.BAD_REQUEST)
+
+            .body(response);
+
+
+}
     }

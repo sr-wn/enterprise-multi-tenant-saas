@@ -4,27 +4,56 @@ import com.srawan.backend.entity.Notification;
 import com.srawan.backend.entity.User;
 
 import com.srawan.backend.repository.NotificationRepository;
+import com.srawan.backend.repository.UserRepository;
+
 import com.srawan.backend.dto.NotificationResponse;
 
-import com.srawan.backend.repository.UserRepository;
 import com.srawan.backend.mapper.NotificationMapper;
+
+import com.srawan.backend.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.srawan.backend.exception.UnauthorizedActionException;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.List;
 import org.springframework.stereotype.Service;
+
+
 
 @Service
 public class NotificationService {
+
+
     private final NotificationRepository notificationRepository;
+
+
     private final UserRepository userRepository;
 
+
+
+
+
     public NotificationService(NotificationRepository notificationRepository, UserRepository userRepository) {
+
         this.notificationRepository = notificationRepository;
+
         this.userRepository = userRepository;
+
     }
 
-    public List<NotificationResponse> getMyNotifications(){
+
+
+
+
+
+
+
+public Page<NotificationResponse> getMyNotifications(
+
+        Pageable pageable
+
+){
 
 
     User currentUser =
@@ -35,24 +64,32 @@ public class NotificationService {
     return notificationRepository
 
             .findByUserOrderByCreatedAtDesc(
-                    currentUser
+
+                    currentUser,
+
+                    pageable
+
             )
 
-            .stream()
 
             .map(
-                    notification -> NotificationMapper.toResponse(notification)
- )
-
-            .toList();
+                    NotificationMapper::toResponse
+            );
 
 
 }
 
 
-public NotificationResponse markAsRead(
-        Long notificationId
-){
+
+
+
+
+
+
+
+
+public NotificationResponse markAsRead(Long notificationId){
+
 
 
     User currentUser =
@@ -60,14 +97,25 @@ public NotificationResponse markAsRead(
 
 
 
+
+
     Notification notification =
             notificationRepository
+
                     .findById(notificationId)
+
                     .orElseThrow(
-                        () -> new RuntimeException(
+
+                        () -> new ResourceNotFoundException(
                             "Notification not found"
                         )
+
                     );
+
+
+
+
+
 
 
 
@@ -80,16 +128,25 @@ public NotificationResponse markAsRead(
                 )
     ){
 
-        throw new RuntimeException(
+
+        throw new UnauthorizedActionException(
+
             "Cannot access another user's notification"
+
         );
+
 
     }
 
 
 
 
+
+
+
+
     notification.setReadStatus(true);
+
 
 
 
@@ -100,6 +157,8 @@ public NotificationResponse markAsRead(
 
 
 
+
+
     return NotificationMapper.toResponse(
             updated
     );
@@ -107,7 +166,16 @@ public NotificationResponse markAsRead(
 
 }
 
+
+
+
+
+
+
+
+
 private User getCurrentUser(){
+
 
 
     String email =
@@ -118,23 +186,53 @@ private User getCurrentUser(){
 
 
 
+
+
     return userRepository
 
             .findByEmail(email)
 
             .orElseThrow(
-                () -> new RuntimeException("User not found")
+
+                () -> new ResourceNotFoundException(
+                    "User not found"
+                )
+
             );
 
 
 }
 
 
-    public void createNotification(User user, String message){ 
-        Notification notification = new Notification();
-        notification.setUser(user);
-        notification.setMessage(message);
-        notificationRepository.save(notification);
-    }
-    
+
+
+
+
+
+
+
+public void createNotification(User user, String message){ 
+
+
+    Notification notification =
+            new Notification();
+
+
+
+    notification.setUser(user);
+
+
+    notification.setMessage(message);
+
+
+
+    notificationRepository.save(
+            notification
+    );
+
+
+}
+
+
+
 }

@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.srawan.backend.dto.LoginRequest;
 import com.srawan.backend.dto.LoginResponse;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import com.srawan.backend.auth.AuthService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +27,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    public LoginResponse Login(@RequestBody LoginRequest request){
+    public LoginResponse Login(@Valid @RequestBody LoginRequest request){
         return authService.login(request);
     }
 }

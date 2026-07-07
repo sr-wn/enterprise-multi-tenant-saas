@@ -4,7 +4,8 @@ import com.srawan.backend.dto.NotificationResponse;
 import com.srawan.backend.service.NotificationService;
 
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 
@@ -40,14 +41,22 @@ public NotificationResponse markAsRead(
 }
 
 
-    @GetMapping
-    public List<NotificationResponse> getMyNotifications(){
+   @GetMapping
+public Page<NotificationResponse> getMyNotifications(
+
+        Pageable pageable
+
+){
 
 
-        return notificationService.getMyNotifications();
+    return notificationService.getMyNotifications(
+
+            pageable
+
+    );
 
 
-    }
+}
 
 
 

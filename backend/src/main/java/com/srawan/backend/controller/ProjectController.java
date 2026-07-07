@@ -2,9 +2,12 @@ package com.srawan.backend.controller;
 import com.srawan.backend.dto.CreateProjectRequest;
 import com.srawan.backend.dto.ProjectResponse;
 import com.srawan.backend.service.ProjectService;
-import com.srawan.backend.entity.Project;
+
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+
 import org.springframework.http.HttpStatus;
-import java.util.List;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,15 +23,21 @@ public class ProjectController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
-    public ProjectResponse createProject(@RequestBody CreateProjectRequest request){
+    public ProjectResponse createProject(@Valid @RequestBody CreateProjectRequest request){
 
         return projectService.createProject(request);
     }
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public List<ProjectResponse> getProjects() {
-        return projectService.getProjects();
-    }
+    public Page<ProjectResponse> getProjects(
+        Pageable pageable
+){
+
+    return projectService.getProjects(
+            pageable
+    );
+
+}
     
 }
