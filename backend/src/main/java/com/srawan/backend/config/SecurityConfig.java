@@ -26,7 +26,7 @@ public SecurityConfig(JwtFilter jwtFilter){
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.csrf(csrf->csrf.disable())
         .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(auth->auth.requestMatchers("/api/health","/api/auth/login","/api/tenants/register").permitAll().anyRequest().authenticated())
+        .authorizeHttpRequests(auth->auth.requestMatchers("/api/health","/api/auth/login","/api/tenants/register", "/swagger-ui/**","/v3/api-docs/**").permitAll().anyRequest().authenticated())
         .addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

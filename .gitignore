@@ -1,22 +1,78 @@
-# Frontend
-frontend/node_modules/
-frontend/dist/
+# =====================
+# Java / Spring Boot
+# =====================
 
-# Backend
-backend/target/
-backend/.mvn/
+target/
 
-# Environment files
-.env
-*.env
+*.jar
+*.war
 
-# IDEs
-.vscode/
+
+# =====================
+# Maven
+# =====================
+
+.mvn/wrapper/maven-wrapper.jar
+
+
+# =====================
+# IDE
+# =====================
+
 .idea/
 
-# OS files
+.vscode/
+
+*.iml
+
+
+# =====================
+# Logs
+# =====================
+
+*.log
+
+logs/
+
+
+# =====================
+# Environment Secrets
+# =====================
+
+.env
+
+application-prod.properties
+
+
+# =====================
+# File uploads
+# =====================
+
+uploads/
+
+
+# =====================
+# OS Files
+# =====================
+
 .DS_Store
+
 Thumbs.db
 
-# Logs
-*.log
+
+# =====================
+# Docker
+# =====================
+
+.docker/
+
+
+# =====================
+# Frontend
+# =====================
+
+node_modules/
+
+dist/
+
+.env.local
