@@ -8,7 +8,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.srawan.backend.Filter.JwtFilter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import java.util.List;
 
 
 
@@ -24,16 +28,81 @@ public SecurityConfig(JwtFilter jwtFilter){
 }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http.csrf(csrf->csrf.disable())
-        .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(auth->auth.requestMatchers("/api/health","/api/auth/login","/api/tenants/register", "/swagger-ui/**","/v3/api-docs/**").permitAll().anyRequest().authenticated())
-        .addFilterBefore(jwtFilter,UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+        http
+
+        .cors(cors -> {})
+
+        .csrf(csrf -> csrf.disable())
+
+        .authorizeHttpRequests(auth -> auth
+
+            .requestMatchers(
+                "/api/auth/login",
+                "/api/tenants/register",
+                "/api/health",
+                "/swagger-ui/**",
+                "/v3/api-docs/**"
+            )
+            .permitAll()
+
+            .anyRequest()
+            .authenticated()
+
+        );
+
+    return http.build();
+}
 
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+public CorsConfigurationSource corsConfigurationSource(){
+
+
+    CorsConfiguration config =
+            new CorsConfiguration();
+
+
+    config.setAllowedOrigins(
+            List.of("http://localhost:5173")
+    );
+
+
+    config.setAllowedMethods(
+            List.of(
+                    "GET",
+                    "POST",
+                    "PUT",
+                    "PATCH",
+                    "DELETE",
+                    "OPTIONS"
+            )
+    );
+
+
+    config.setAllowedHeaders(
+            List.of("*")
+    );
+
+
+    config.setAllowCredentials(true);
+
+
+
+    UrlBasedCorsConfigurationSource source =
+            new UrlBasedCorsConfigurationSource();
+
+
+    source.registerCorsConfiguration(
+            "/**",
+            config
+    );
+
+
+    return source;
+}
 
 }

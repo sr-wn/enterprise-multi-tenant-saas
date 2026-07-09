@@ -1,8 +1,16 @@
+import AppRoutes from "./routes/AppRoutes";
+
+
 function App(){
-  return(
-  <div>
-    <h1>Multi-Tenant Saas</h1>
-    <p>Frontend is Running Successfully</p>
-  </div>)
+
+
+    return (
+
+        <AppRoutes />
+
+    )
+
 }
+
+
 export default App;
