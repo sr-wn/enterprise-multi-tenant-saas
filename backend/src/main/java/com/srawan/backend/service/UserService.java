@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 public class UserService {
@@ -105,6 +107,59 @@ public class UserService {
         );
 
     }
+
+    public List<UserResponse> getUsers(){
+
+
+    User currentUser =
+            getCurrentUser();
+
+
+
+    return userRepository
+
+            .findByTenant(
+                    currentUser.getTenant()
+            )
+
+            .stream()
+
+            .map(user ->
+
+                new UserResponse(
+
+                    user.getId(),
+
+                    user.getFullname(),
+
+                    user.getEmail(),
+
+                    user.getRole()
+
+                )
+
+            )
+
+            .toList();
+
+}
+
+
+ private User getCurrentUser(){
+
+    String email =
+            SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getName();
+
+
+    return userRepository
+            .findByEmail(email)
+            .orElseThrow(
+                    () -> new RuntimeException("User not found")
+            );
+ }
 
 
 }

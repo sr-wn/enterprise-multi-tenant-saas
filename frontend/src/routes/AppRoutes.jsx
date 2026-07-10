@@ -5,6 +5,7 @@ import Register from "../pages/Register";
 import ProtectedRoute from "../components/ProtectedRoute";
 import DashBoard from "../pages/DashBoard";
 import Projects from "../pages/Projects.jsx";
+import Tasks from "../pages/Tasks.jsx";
 
 
 
@@ -44,6 +45,23 @@ function AppRoutes() {
                     <ProtectedRoute>
 
                         <Projects />
+
+                    </ProtectedRoute>
+
+                }
+
+            />
+
+
+            <Route
+
+                path="/tasks"
+
+                element={
+
+                    <ProtectedRoute>
+
+                        <Tasks />
 
                     </ProtectedRoute>
 

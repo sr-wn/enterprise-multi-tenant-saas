@@ -2,7 +2,7 @@ package com.srawan.backend.controller;
 import com.srawan.backend.dto.CreateUserRequest;
 import com.srawan.backend.dto.UserResponse;
 import com.srawan.backend.service.UserService;
-
+import java.util.List;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -23,5 +23,12 @@ public class UserController {
     public UserResponse createUser(@Valid @RequestBody CreateUserRequest request){
         return userService.createUser(request);
     }
+    @GetMapping
+@PreAuthorize("hasRole('ADMIN')")
+public List<UserResponse> getUsers(){
+
+    return userService.getUsers();
+
+}
     
 }
