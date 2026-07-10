@@ -27,12 +27,23 @@ public SecurityConfig(JwtFilter jwtFilter){
 
 }
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+
+    http
 
         .cors(cors -> {})
 
         .csrf(csrf -> csrf.disable())
+
+
+        .sessionManagement(session ->
+
+            session.sessionCreationPolicy(
+                SessionCreationPolicy.STATELESS
+            )
+
+        )
+
 
         .authorizeHttpRequests(auth -> auth
 
@@ -45,10 +56,21 @@ public SecurityConfig(JwtFilter jwtFilter){
             )
             .permitAll()
 
+
             .anyRequest()
             .authenticated()
 
+        )
+
+
+        .addFilterBefore(
+
+            jwtFilter,
+
+            UsernamePasswordAuthenticationFilter.class
+
         );
+
 
     return http.build();
 }

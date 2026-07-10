@@ -48,7 +48,7 @@ public class Project {
         this.id = id;
     }
 
-    public String getFullname() {
+    public String getName() {
         return name;
     }
 

@@ -21,7 +21,7 @@ public class ProjectResponse {
         return id;
     }
 
-    public String getfullName() {
+    public String getName() {
         return name;
     }
 

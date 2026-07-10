@@ -2,18 +2,21 @@ import { Routes, Route } from "react-router-dom";
 
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import Dashboard from "../pages/Dashboard";
+import ProtectedRoute from "../components/ProtectedRoute";
+import DashBoard from "../pages/DashBoard";
+import Projects from "../pages/Projects.jsx";
 
 
-function AppRoutes(){
+
+function AppRoutes() {
 
 
-    return(
+    return (
 
         <Routes>
 
 
-            <Route 
+            <Route
                 path="/login"
                 element={<Login />}
             />
@@ -27,7 +30,25 @@ function AppRoutes(){
 
             <Route
                 path="/dashboard"
-                element={<Dashboard />}
+                element={
+                    <ProtectedRoute><DashBoard />
+                    </ProtectedRoute>}
+            />
+
+            <Route
+
+                path="/projects"
+
+                element={
+
+                    <ProtectedRoute>
+
+                        <Projects />
+
+                    </ProtectedRoute>
+
+                }
+
             />
 
 

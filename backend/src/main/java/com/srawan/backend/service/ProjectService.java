@@ -147,7 +147,7 @@ public class ProjectService {
 
                 project.getId(),
 
-                project.getFullname(),
+                project.getName(),
 
                 project.getDescription(),
 
