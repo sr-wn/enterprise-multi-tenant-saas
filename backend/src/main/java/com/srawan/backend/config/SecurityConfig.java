@@ -52,7 +52,8 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
                 "/api/tenants/register",
                 "/api/health",
                 "/swagger-ui/**",
-                "/v3/api-docs/**"
+                "/v3/api-docs/**",
+                "/uploads/**"
             )
             .permitAll()
 

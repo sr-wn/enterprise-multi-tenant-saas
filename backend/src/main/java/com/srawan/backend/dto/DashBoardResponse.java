@@ -4,6 +4,9 @@ package com.srawan.backend.dto;
 public class DashBoardResponse {
 
 
+    private String companyName;
+
+
     private long totalProjects;
 
 
@@ -27,6 +30,8 @@ public class DashBoardResponse {
 
     public DashBoardResponse(
 
+            String companyName,
+
             long totalProjects,
 
             long totalUsers,
@@ -40,6 +45,8 @@ public class DashBoardResponse {
             long completedTasks
 
     ){
+
+        this.companyName = companyName;
 
         this.totalProjects = totalProjects;
 
@@ -57,6 +64,14 @@ public class DashBoardResponse {
 
 
 
+
+
+
+    public String getCompanyName(){
+
+        return companyName;
+
+    }
 
 
 

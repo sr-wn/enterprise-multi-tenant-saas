@@ -14,5 +14,9 @@ public interface NotificationRepository extends JpaRepository<Notification , Lon
         Pageable pageable
 
 );
+
+   long countByUserAndReadStatusFalse(User user);
+
+   void deleteByUser(User user);
     
 }

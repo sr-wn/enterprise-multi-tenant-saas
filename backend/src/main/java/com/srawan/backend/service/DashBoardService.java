@@ -143,6 +143,8 @@ public class DashBoardService {
 
         return new DashBoardResponse(
 
+                currentUser.getTenant().getCompanyName(),
+
                 totalProjects,
 
                 totalUsers,

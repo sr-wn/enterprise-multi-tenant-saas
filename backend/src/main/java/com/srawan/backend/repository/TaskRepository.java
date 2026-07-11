@@ -19,8 +19,17 @@ long countByProjectTenantIdAndStatus(
         TaskStatus status
 );
     List<Task> findByProject(Project project);
+    List<Task> findByAssignedTo(User user);
+    List<Task> findByCreatedBy(User user);
+    long countByProject(Project project);
+    long countByProjectTenant(com.srawan.backend.entity.Tenant tenant);
+    Page<Task> findByProjectTenant(com.srawan.backend.entity.Tenant tenant, Pageable pageable);
     Page<Task> findByAssignedTo(
         User user,
+        Pageable pageable
+);
+    Page<Task> findByProject(
+        Project project,
         Pageable pageable
 );
     

@@ -6,11 +6,15 @@ import jakarta.validation.Valid;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import com.srawan.backend.dto.UpdateTaskStatusRequest;
+import com.srawan.backend.dto.UpdateTaskRequest;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import com.srawan.backend.dto.CreateTaskRequest;
 import com.srawan.backend.dto.TaskActivityResponse;
 import com.srawan.backend.dto.TaskResponse;
@@ -58,9 +62,28 @@ public class TaskController {
 }
 
 
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public Page<TaskResponse> allTasks(Pageable pageable){
+        return taskService.allTenantTasks(pageable);
+    }
+
+
+    @PatchMapping("/{id}")
+    public TaskResponse updateTask(@PathVariable Long id, @RequestBody UpdateTaskRequest request){
+        return taskService.updateTask(id, request);
+    }
+
     @PatchMapping("/{id}/status")
     public TaskResponse updateStatus(@PathVariable Long id, @RequestBody UpdateTaskStatusRequest request){
         return taskService.updateStatus(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteTask(@PathVariable Long id){
+        taskService.deleteTask(id);
     }
 
     @GetMapping("/{id}/activity")

@@ -1,6 +1,7 @@
 package com.srawan.backend.controller;
 
 import com.srawan.backend.dto.NotificationResponse;
+import com.srawan.backend.dto.NotificationCountResponse;
 import com.srawan.backend.service.NotificationService;
 
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,13 @@ public NotificationResponse markAsRead(
     return notificationService
             .markAsRead(id);
 
+}
+
+@GetMapping("/count")
+public NotificationCountResponse getUnreadNotifications() {
+    return new NotificationCountResponse(
+            notificationService.countUnreadNotifications()
+    );
 }
 
 

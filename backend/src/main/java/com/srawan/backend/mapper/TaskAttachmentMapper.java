@@ -31,7 +31,7 @@ public class TaskAttachmentMapper {
 
                 attachment.getFileType(),
 
-                attachment.getFilePath(),
+                attachment.getFilePath().replace("\\", "/"),
 
                 attachment
                         .getUploadedBy()

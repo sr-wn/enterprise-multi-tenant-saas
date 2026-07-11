@@ -21,6 +21,9 @@ public class CreateProjectRequest {
 
 
 
+    private Long assignedUserId;
+
+
 
 
     public String getName(){
@@ -35,6 +38,15 @@ public class CreateProjectRequest {
     public String getDescription(){
 
         return description;
+
+    }
+
+
+
+
+    public Long getAssignedUserId(){
+
+        return assignedUserId;
 
     }
 

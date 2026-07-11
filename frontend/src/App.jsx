@@ -1,16 +1,13 @@
 import AppRoutes from "./routes/AppRoutes";
+import CommandPalette from "./components/CommandPalette";
 
-
-function App(){
-
-
+function App() {
     return (
-
-        <AppRoutes />
-
-    )
-
+        <>
+            <AppRoutes />
+            <CommandPalette />
+        </>
+    );
 }
-
 
 export default App;

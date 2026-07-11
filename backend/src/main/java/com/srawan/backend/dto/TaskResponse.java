@@ -16,8 +16,10 @@ public class TaskResponse {
     private LocalDateTime createdAt;
     private String assignedTo;
     private String createdBy;
+    private Long projectId;
+    private String projectName;
 
-    public TaskResponse(Long id, String title, String description, TaskStatus status, String priority, LocalDate dueDate, LocalDateTime createdAt, String assignedTo, String createdBy) {
+    public TaskResponse(Long id, String title, String description, TaskStatus status, String priority, LocalDate dueDate, LocalDateTime createdAt, String assignedTo, String createdBy, Long projectId, String projectName) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -27,6 +29,8 @@ public class TaskResponse {
         this.createdAt = createdAt;
         this.assignedTo = assignedTo;
         this.createdBy = createdBy;
+        this.projectId = projectId;
+        this.projectName = projectName;
     }
 
     public TaskResponse() {
@@ -65,6 +69,14 @@ public class TaskResponse {
 
     public String getCreatedBy() {
         return createdBy;
+    }
+
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    public String getProjectName() {
+        return projectName;
     }
 
 

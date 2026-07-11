@@ -5,10 +5,15 @@ import java.util.List;
 
 import com.srawan.backend.entity.Task;
 import com.srawan.backend.entity.TaskActivity;
+import com.srawan.backend.entity.User;
 
 public interface TaskActivityRepository extends JpaRepository<TaskActivity, Long> {
 
     List<TaskActivity> findByTask(Task task);
+
+    void deleteByTask(Task task);
+
+    void deleteByPerformedBy(User user);
 
     
 }

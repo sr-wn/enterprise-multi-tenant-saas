@@ -9,6 +9,8 @@ import com.srawan.backend.repository.TaskRepository;
 import com.srawan.backend.repository.ProjectRepository;
 import com.srawan.backend.repository.UserRepository;
 import com.srawan.backend.repository.TaskActivityRepository;
+import com.srawan.backend.repository.TaskCommentRepository;
+import com.srawan.backend.repository.TaskAttachmentRepository;
 
 import com.srawan.backend.entity.Task;
 import com.srawan.backend.entity.Project;
@@ -21,6 +23,7 @@ import com.srawan.backend.dto.CreateTaskRequest;
 import com.srawan.backend.dto.TaskActivityResponse;
 import com.srawan.backend.dto.TaskResponse;
 import com.srawan.backend.dto.UpdateTaskStatusRequest;
+import com.srawan.backend.dto.UpdateTaskRequest;
 
 import com.srawan.backend.enums.TaskStatus;
 
@@ -39,14 +42,18 @@ public class TaskService {
     private ProjectRepository projectRepository;
     private UserRepository userRepository;
     private TaskActivityRepository taskActivityRepository;
+    private TaskCommentRepository taskCommentRepository;
+    private TaskAttachmentRepository taskAttachmentRepository;
     private NotificationService notificationService;
 
 
-    public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository, UserRepository userRepository, TaskActivityRepository taskActivityRepository, NotificationService notificationService) {
+    public TaskService(TaskRepository taskRepository, ProjectRepository projectRepository, UserRepository userRepository, TaskActivityRepository taskActivityRepository, TaskCommentRepository taskCommentRepository, TaskAttachmentRepository taskAttachmentRepository, NotificationService notificationService) {
         this.taskRepository = taskRepository;
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.taskActivityRepository = taskActivityRepository;
+        this.taskCommentRepository = taskCommentRepository;
+        this.taskAttachmentRepository = taskAttachmentRepository;
         this.notificationService = notificationService;
     }
     
@@ -132,7 +139,9 @@ private TaskResponse mapToResponse(Task task){
         task.getDueDate(),
         task.getCreatedAt(),
         task.getAssignedTo().getEmail(),
-        task.getCreatedBy().getEmail()
+        task.getCreatedBy().getEmail(),
+        task.getProject() != null ? task.getProject().getId() : null,
+        task.getProject() != null ? task.getProject().getName() : null
 
     );
 
@@ -175,14 +184,29 @@ public Page<TaskResponse> myTasks(
 
 
     return taskRepository
-
-            .findByAssignedTo(
-                    currentUser,
-                    pageable
-            )
-
+            .findByAssignedTo(currentUser, pageable)
             .map(this::mapToResponse);
+}
 
+public Page<TaskResponse> allTenantTasks(Pageable pageable){
+
+    User currentUser = getCurrentUser();
+
+    return taskRepository
+            .findByProjectTenant(currentUser.getTenant(), pageable)
+            .map(this::mapToResponse);
+}
+
+public Page<TaskResponse> getTasksByProjectId(Long projectId, Pageable pageable) {
+    User currentUser = getCurrentUser();
+    Project project = projectRepository.findById(projectId)
+        .orElseThrow(() -> new ResourceNotFoundException("Project Not Found"));
+
+    if (!project.getTenant().id().equals(currentUser.getTenant().id())) {
+        throw new UnauthorizedActionException("Unauthorized");
+    }
+
+    return taskRepository.findByProject(project, pageable).map(this::mapToResponse);
 }
 
 
@@ -191,6 +215,57 @@ public Page<TaskResponse> myTasks(
 
 
 
+
+public TaskResponse updateTask(Long taskId, UpdateTaskRequest request) {
+    User currentUser = getCurrentUser();
+
+    Task task = taskRepository.findById(taskId)
+        .orElseThrow(() -> new ResourceNotFoundException("Task Not Found"));
+
+    // Check authorization (e.g. assigned user or admin)
+    if (!task.getAssignedTo().getId().equals(currentUser.getId()) && !currentUser.getRole().name().equals("ADMIN")) {
+        throw new UnauthorizedActionException("You can only edit your assigned tasks");
+    }
+
+    // Update fields if provided
+    boolean updated = false;
+    
+    if (request.getTitle() != null && !request.getTitle().equals(task.getTitle())) {
+        task.setTitle(request.getTitle());
+        updated = true;
+    }
+    
+    if (request.getDescription() != null && !request.getDescription().equals(task.getDescription())) {
+        task.setDescription(request.getDescription());
+        updated = true;
+    }
+    
+    if (request.getPriority() != null && !request.getPriority().equals(task.getPriority())) {
+        task.setPriority(request.getPriority());
+        updated = true;
+    }
+    
+    if (request.getDueDate() != null && !request.getDueDate().equals(task.getDueDate())) {
+        task.setDueDate(request.getDueDate());
+        updated = true;
+    }
+
+    if (updated) {
+        Task updatedTask = taskRepository.save(task);
+
+        TaskActivity activity = new TaskActivity();
+        activity.setTask(task);
+        activity.setPerformedBy(currentUser);
+        activity.setAction("TASK UPDATED");
+        activity.setOldValue("Details modified");
+        activity.setNewValue("Details modified");
+        taskActivityRepository.save(activity);
+
+        return mapToResponse(updatedTask);
+    }
+
+    return mapToResponse(task);
+}
 
 public TaskResponse updateStatus(Long taskId, UpdateTaskStatusRequest request){
 
@@ -249,6 +324,31 @@ public TaskResponse updateStatus(Long taskId, UpdateTaskStatusRequest request){
 
 
 
+
+
+@org.springframework.transaction.annotation.Transactional
+public void deleteTask(Long taskId){
+
+    User currentUser = getCurrentUser();
+
+    Task task = taskRepository.findById(taskId)
+        .orElseThrow(
+            () -> new ResourceNotFoundException("Task Not Found")
+        );
+
+    if(!task.getProject().getTenant().id().equals(currentUser.getTenant().id())){
+        throw new UnauthorizedActionException(
+            "Cannot delete another tenant's task"
+        );
+    }
+
+    taskActivityRepository.deleteByTask(task);
+    taskCommentRepository.deleteByTask(task);
+    taskAttachmentRepository.deleteByTask(task);
+
+    taskRepository.delete(task);
+
+}
 
 
 public List<TaskActivityResponse> getActivity(Long taskId){
