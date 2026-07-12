@@ -1,0 +1,9 @@
+backend/target/
+backend/.env
+*.log
+backend/application-prod.properties
+frontend/node_modules/
+**/.git
+**/.mvn
+**/*.iml
+**/.idea
