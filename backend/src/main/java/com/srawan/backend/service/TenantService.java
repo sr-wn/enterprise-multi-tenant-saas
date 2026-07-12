@@ -8,6 +8,7 @@ import com.srawan.backend.repository.TenantRepository;
 import com.srawan.backend.repository.UserRepository;
 import com.srawan.backend.repository.NotificationRepository;
 import com.srawan.backend.repository.TaskActivityRepository;
+import com.srawan.backend.repository.SupportTicketRepository;
 import com.srawan.backend.dto.RegisterTenantRequest;
 import com.srawan.backend.dto.TenantRequest;
 import java.util.List;
@@ -36,6 +37,7 @@ public class TenantService {
     private final ProjectService projectService;
     private final NotificationRepository notificationRepository;
     private final TaskActivityRepository taskActivityRepository;
+    private final SupportTicketRepository supportTicketRepository;
 
 
 
@@ -45,7 +47,8 @@ public class TenantService {
             PasswordEncoder passwordEncoder,
             ProjectService projectService,
             NotificationRepository notificationRepository,
-            TaskActivityRepository taskActivityRepository
+            TaskActivityRepository taskActivityRepository,
+            SupportTicketRepository supportTicketRepository
     ){
         this.tenantRepository=tenantRepository;
         this.userRepository=userRepository;
@@ -53,6 +56,7 @@ public class TenantService {
         this.projectService=projectService;
         this.notificationRepository=notificationRepository;
         this.taskActivityRepository=taskActivityRepository;
+        this.supportTicketRepository=supportTicketRepository;
     }
 
 @Transactional
@@ -127,7 +131,10 @@ return TenantMapper.toResponse(updatedTenant);
                 .getContent()
                 .forEach(project -> projectService.deleteProject(project.getId()));
 
-        // 2. Delete users (notifications + activities first to satisfy FK constraints)
+        // 2. Delete support tickets (standalone table referencing users via requester)
+        supportTicketRepository.deleteByTenant(tenant);
+
+        // 3. Delete users (notifications + activities first to satisfy FK constraints)
         for(User user : userRepository.findByTenant(tenant)){
             notificationRepository.deleteByUser(user);
             taskActivityRepository.deleteByPerformedBy(user);

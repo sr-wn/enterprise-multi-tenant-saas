@@ -13,5 +13,7 @@ public interface SupportTicketRepository extends JpaRepository<SupportTicket, Lo
 
     List<SupportTicket> findByTenant(Tenant tenant);
 
+    void deleteByTenant(Tenant tenant);
+
     Optional<SupportTicket> findByIdAndTenant(Long id, Tenant tenant);
 }
