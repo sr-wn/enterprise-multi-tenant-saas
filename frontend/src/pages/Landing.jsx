@@ -309,6 +309,7 @@ function FeatureRow({ flip, heading, copy, mock }) {
 function Landing() {
   const { token } = useContext(AuthContext);
   const [scrolled, setScrolled] = useState(false);
+  const year = new Date().getFullYear();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -463,6 +464,9 @@ function Landing() {
             <Link to="/login" className="btn-ghost no-underline">Log in</Link>
             <Link to="/register" className="btn-ghost no-underline">Get started</Link>
           </div>
+        </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-8 text-tertiary" style={{ fontSize: "var(--text-xs)" }}>
+          © {year} Tena. All rights reserved.
         </div>
       </footer>
     </div>
