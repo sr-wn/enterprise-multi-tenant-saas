@@ -1,0 +1,8 @@
+target/
+.env
+*.log
+application-prod.properties
+.mvn/
+.git
+*.iml
+.idea/
