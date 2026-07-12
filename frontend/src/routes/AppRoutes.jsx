@@ -11,6 +11,7 @@ import Tasks from "../pages/Tasks.jsx";
 import Users from "../pages/Users.jsx";
 import Notifications from "../pages/Notifications.jsx";
 import ProjectDetails from "../pages/ProjectDetails.jsx";
+import Settings from "../pages/Settings";
 import { AuthContext } from "../context/AuthContext";
 
 
@@ -52,19 +53,12 @@ function AppRoutes() {
             />
 
             <Route
-
                 path="/projects"
-
                 element={
-
                     <ProtectedRoute>
-
                         <Projects />
-
                     </ProtectedRoute>
-
                 }
-
             />
 
             <Route
@@ -79,54 +73,44 @@ function AppRoutes() {
             <Route
                 path="/tasks"
                 element={
-
                     <ProtectedRoute>
-
                         <Tasks />
-
                     </ProtectedRoute>
-
                 }
-
             />
 
             <Route
-
                 path="/users"
-
                 element={
-
                     <ProtectedRoute>
-
                         <Users />
-
                     </ProtectedRoute>
-
                 }
-
             />
 
             <Route
-
                 path="/notifications"
-
                 element={
-
                     <ProtectedRoute>
-
                         <Notifications />
-
                     </ProtectedRoute>
-
                 }
+            />
 
+            <Route
+                path="/settings"
+                element={
+                    <ProtectedRoute>
+                        <Settings />
+                    </ProtectedRoute>
+                }
             />
 
         </Routes>
 
     );
-
 }
+
 
 
 export default AppRoutes;

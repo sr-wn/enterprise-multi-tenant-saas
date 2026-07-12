@@ -1,25 +1,29 @@
 package com.srawan.backend.service;
 
 import com.srawan.backend.dto.TenantResponse;
+import com.srawan.backend.entity.Project;
 import com.srawan.backend.entity.Tenant;
+import com.srawan.backend.entity.User;
 import com.srawan.backend.repository.TenantRepository;
+import com.srawan.backend.repository.UserRepository;
+import com.srawan.backend.repository.NotificationRepository;
+import com.srawan.backend.repository.TaskActivityRepository;
 import com.srawan.backend.dto.RegisterTenantRequest;
 import com.srawan.backend.dto.TenantRequest;
 import java.util.List;
 import com.srawan.backend.exception.ResourceNotFoundException;
+import com.srawan.backend.exception.DuplicateResourceException;
+import com.srawan.backend.exception.UnauthorizedActionException;
 import com.srawan.backend.mapper.TenantMapper;
 import com.srawan.backend.enums.Role;
 
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.srawan.backend.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.data.domain.Pageable;
 
 import jakarta.transaction.Transactional;
-
-import com.srawan.backend.entity.User;
-import com.srawan.backend.exception.DuplicateResourceException;
 
 
 
@@ -29,13 +33,26 @@ public class TenantService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ProjectService projectService;
+    private final NotificationRepository notificationRepository;
+    private final TaskActivityRepository taskActivityRepository;
 
 
 
-    public TenantService(TenantRepository tenantRepository, UserRepository userRepository, PasswordEncoder passwordEncoder  ){
+    public TenantService(
+            TenantRepository tenantRepository,
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            ProjectService projectService,
+            NotificationRepository notificationRepository,
+            TaskActivityRepository taskActivityRepository
+    ){
         this.tenantRepository=tenantRepository;
         this.userRepository=userRepository;
         this.passwordEncoder=passwordEncoder;
+        this.projectService=projectService;
+        this.notificationRepository=notificationRepository;
+        this.taskActivityRepository=taskActivityRepository;
     }
 
 @Transactional
@@ -94,9 +111,44 @@ return TenantMapper.toResponse(updatedTenant);
     }
 
 
-public void deleteTenant(Long id){
-    Tenant tenant=tenantRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Tenant Not found"));
-    tenantRepository.delete(tenant);
-}
+@Transactional
+    public void dissolveTenant(){
+        User currentUser = getCurrentUser();
+
+        if(!Role.ADMIN.name().equals(currentUser.getRole().name())){
+            throw new UnauthorizedActionException("Only an admin can dissolve the tenancy");
+        }
+
+        Tenant tenant = currentUser.getTenant();
+
+        // 1. Delete all projects (cascades tasks + their activities/comments/attachments)
+        projectService
+                .getProjects(Pageable.unpaged())
+                .getContent()
+                .forEach(project -> projectService.deleteProject(project.getId()));
+
+        // 2. Delete users (notifications + activities first to satisfy FK constraints)
+        for(User user : userRepository.findByTenant(tenant)){
+            notificationRepository.deleteByUser(user);
+            taskActivityRepository.deleteByPerformedBy(user);
+            userRepository.delete(user);
+        }
+
+        // 3. Finally remove the tenant itself
+        tenantRepository.delete(tenant);
+    }
+
+
+    private User getCurrentUser(){
+        String email =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getName();
+
+        return userRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
 
 }

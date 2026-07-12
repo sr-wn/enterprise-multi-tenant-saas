@@ -53,7 +53,6 @@ public class Tenant {
     }
 
 
-
     @OneToMany(mappedBy="tenant",
         cascade=jakarta.persistence.CascadeType.ALL,
         orphanRemoval=true

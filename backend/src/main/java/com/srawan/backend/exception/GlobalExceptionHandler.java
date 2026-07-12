@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.HashMap;
 import org.springframework.http.HttpStatus;
@@ -65,6 +66,38 @@ public ResponseEntity<Map<String,Object>> handleUnauthorized(
             .body(response);
 
 }
+
+        @ExceptionHandler(AccessDeniedException.class)
+        public ResponseEntity<Map<String,Object>> handleAccessDenied(
+                AccessDeniedException ex
+        ){
+            Map<String,Object> response = Map.of(
+                "timestamp", LocalDateTime.now().toString(),
+                "status", 403,
+                "error", "Forbidden",
+                "message", "You are not allowed to perform this action"
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(response);
+        }
+
+        @ExceptionHandler(InvalidCredentialsException.class)
+        public ResponseEntity<Map<String,Object>> handleInvalidCredentials(
+                InvalidCredentialsException ex
+        ){
+            Map<String,Object> response = Map.of(
+                "timestamp", LocalDateTime.now().toString(),
+                "status", 401,
+                "error", "Unauthorized",
+                "message", ex.getMessage()
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(response);
+        }
 
 
 

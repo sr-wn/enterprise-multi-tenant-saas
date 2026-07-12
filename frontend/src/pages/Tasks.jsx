@@ -349,14 +349,14 @@ function Tasks() {
                 {/* View Mode Toggle */}
                 <div className="flex bg-black/5 dark:bg-white/5 rounded-lg p-1 border border-default">
                     <button 
-                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition-fast flex items-center gap-2 ${viewMode === 'list' ? 'bg-white dark:bg-black shadow-sm text-primary' : 'text-secondary hover:text-primary'}`}
+                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition-fast flex items-center gap-2 ${viewMode === 'list' ? 'surface-primary shadow-sm text-primary' : 'text-secondary hover:text-primary'}`}
                         onClick={() => setViewMode('list')}
                     >
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
                         List
                     </button>
                     <button 
-                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition-fast flex items-center gap-2 ${viewMode === 'board' ? 'bg-white dark:bg-black shadow-sm text-primary' : 'text-secondary hover:text-primary'}`}
+                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition-fast flex items-center gap-2 ${viewMode === 'board' ? 'surface-primary shadow-sm text-primary' : 'text-secondary hover:text-primary'}`}
                         onClick={() => setViewMode('board')}
                     >
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>

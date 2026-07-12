@@ -2,6 +2,7 @@ package com.srawan.backend.repository;
 
 import com.srawan.backend.entity.Tenant;
 import com.srawan.backend.entity.User;
+import com.srawan.backend.enums.Role;
 import java.util.Optional;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ long countByTenantId(Long tenantId);
     boolean existsByEmail(String email);
 Page<User> findByTenant(Tenant tenant, Pageable pageable);
 List<User> findByTenant(Tenant tenant);
+List<User> findByTenantAndRole(Tenant tenant, Role role);
     Optional<User> findByEmail(String email);
-    
+
 }

@@ -174,12 +174,12 @@ public NotificationResponse markAsRead(Long notificationId){
 
 
 
-public long countUnreadNotifications() {
-    User currentUser = getCurrentUser();
-    return notificationRepository.countByUserAndReadStatusFalse(currentUser);
-}
+    public long countUnreadNotifications() {
+        User currentUser = getCurrentUser();
+        return notificationRepository.countByUserAndReadStatusFalse(currentUser);
+    }
 
-private User getCurrentUser(){
+    private User getCurrentUser(){
 
 
 
@@ -217,7 +217,6 @@ private User getCurrentUser(){
 
 
 public void createNotification(User user, String message){ 
-
 
     Notification notification =
             new Notification();

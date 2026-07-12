@@ -20,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -44,7 +45,6 @@ public TenantResponse registerTenant(
 
 }
 
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TenantResponse createTenant(@RequestBody TenantRequest request){
@@ -68,10 +68,11 @@ public List<TenantResponse> getAllTenants(){
         return tenantService.updateTenant(id, request);
     }
 
-    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/dissolve")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTenant(@PathVariable Long id){
-        tenantService.deleteTenant(id);
+    public void dissolveTenant(){
+        tenantService.dissolveTenant();
     }
 
 }

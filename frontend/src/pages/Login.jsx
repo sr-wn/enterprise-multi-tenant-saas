@@ -16,8 +16,8 @@ function Login() {
 
   async function handleLogin(e) {
     e.preventDefault();
-    setError("");
-    setLoading(true);
+      setError("");
+      setLoading(true);
 
     try {
       const response = await api.post("/auth/login", {

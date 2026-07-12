@@ -9,6 +9,7 @@ import com.srawan.backend.dto.LoginRequest;
 import com.srawan.backend.entity.User;
 import com.srawan.backend.dto.LoginResponse;
 import com.srawan.backend.service.JwtService;
+import com.srawan.backend.exception.InvalidCredentialsException;
 
 @Service
 public class AuthService {
@@ -27,10 +28,10 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest request){
 
-        User user=userRepository.findByEmail(request.email()).orElseThrow(()->new RuntimeException("User Not found"));
+        User user=userRepository.findByEmail(request.email()).orElseThrow(()->new InvalidCredentialsException("Invalid credentials"));
 
         if(!passwordEncoder.matches(request.password(), user.getPassword())){
-            throw new RuntimeException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials");
         }
         String token=jwtService.generateToken(user);
 
