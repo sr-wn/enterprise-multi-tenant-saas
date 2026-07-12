@@ -45,6 +45,9 @@ public class TaskAttachment {
 
 
 
+    private Long fileSize;
+
+
 
     private LocalDateTime uploadedAt;
 
@@ -164,14 +167,20 @@ public class TaskAttachment {
 
 
     public void setFilePath(String filePath){
-
         this.filePath = filePath;
-
     }
 
 
 
+    public Long getFileSize(){
+        return fileSize;
+    }
 
+
+
+    public void setFileSize(Long fileSize){
+        this.fileSize = fileSize;
+    }
 
 
 

@@ -33,6 +33,8 @@ public class TaskAttachmentMapper {
 
                 attachment.getFilePath().replace("\\", "/"),
 
+                attachment.getFileSize(),
+
                 attachment
                         .getUploadedBy()
                         .getEmail(),

@@ -15,6 +15,8 @@ import com.srawan.backend.repository.UserRepository;
 
 import com.srawan.backend.exception.ResourceNotFoundException;
 import com.srawan.backend.exception.UnauthorizedActionException;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,10 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 
 
@@ -41,16 +41,19 @@ private final TaskRepository taskRepository;
 
 private final UserRepository userRepository;
 
+private final Cloudinary cloudinary;
 
 
 
-public TaskAttachmentService(TaskAttachmentRepository taskAttachmentRepository, TaskRepository taskRepository, UserRepository userRepository) {
+public TaskAttachmentService(TaskAttachmentRepository taskAttachmentRepository, TaskRepository taskRepository, UserRepository userRepository, Cloudinary cloudinary) {
 
     this.taskAttachmentRepository = taskAttachmentRepository;
 
     this.taskRepository = taskRepository;
 
     this.userRepository = userRepository;
+
+    this.cloudinary = cloudinary;
 
 }
 
@@ -97,31 +100,18 @@ public TaskAttachmentResponse upload(Long taskId, MultipartFile file) throws Exc
 
 
 
-    String uploadDir="uploads/";
+    Map<?, ?> result = cloudinary.uploader().upload(
+            file.getBytes(),
+            ObjectUtils.asMap(
+                    "folder", "task-attachments",
+                    "resource_type", "auto"
+            )
+    );
 
-    Files.createDirectories(Paths.get(uploadDir));
-
-
-
-    String filepath=
-            uploadDir
-            +
-            System.currentTimeMillis()
-            +
-            "-"
-            +
-            file.getOriginalFilename();
-
-
-
-    Path path=Paths.get(filepath);
-
-
-
-    Files.write(path,file.getBytes());
-
-
-
+    String secureUrl = (String) result.get("secure_url");
+    Long bytes = result.get("bytes") != null
+            ? ((Number) result.get("bytes")).longValue()
+            : file.getSize();
 
 
 
@@ -133,9 +123,11 @@ public TaskAttachmentResponse upload(Long taskId, MultipartFile file) throws Exc
 
     attachment.setFileName(file.getOriginalFilename());
 
-    attachment.setFilePath(filepath);
+    attachment.setFilePath(secureUrl);
 
     attachment.setFileType(file.getContentType());
+
+    attachment.setFileSize(bytes);
 
     attachment.setTask(task);
 

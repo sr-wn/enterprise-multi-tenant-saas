@@ -19,6 +19,11 @@ public class TaskAttachmentResponse {
     private String filePath;
 
 
+
+    private Long fileSize;
+
+
+
     private String uploadedBy;
 
 
@@ -39,11 +44,14 @@ public class TaskAttachmentResponse {
 
             String filePath,
 
+            Long fileSize,
+
             String uploadedBy,
 
             LocalDateTime uploadedAt
 
     ){
+
 
 
         this.id = id;
@@ -54,9 +62,12 @@ public class TaskAttachmentResponse {
 
         this.filePath = filePath;
 
+        this.fileSize = fileSize;
+
         this.uploadedBy = uploadedBy;
 
         this.uploadedAt = uploadedAt;
+
 
 
     }
@@ -95,11 +106,14 @@ public class TaskAttachmentResponse {
 
 
     public String getFilePath(){
-
         return filePath;
-
     }
 
+
+
+    public Long getFileSize(){
+        return fileSize;
+    }
 
 
 
